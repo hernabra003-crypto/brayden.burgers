@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>brayden.burgers - Chat App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Wallpaper selector -->
+    <div class="wallpaper-selector">
+        <div class="wallpaper-colors">
+            <div class="color-btn" data-color="red" style="background-color: #ff4444;"></div>
+            <div class="color-btn" data-color="orange" style="background-color: #ff8c00;"></div>
+            <div class="color-btn" data-color="yellow" style="background-color: #ffdd00;"></div>
+            <div class="color-btn" data-color="green" style="background-color: #00cc44;"></div>
+            <div class="color-btn" data-color="blue" style="background-color: #4488ff;"></div>
+            <div class="color-btn" data-color="purple" style="background-color: #aa44ff;"></div>
+            <div class="color-btn" data-color="indigo" style="background-color: #3f00ff;"></div>
+            <div class="color-btn" data-color="pink" style="background-color: #ff44aa;"></div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Start Screen -->
+        <div id="startScreen" class="screen">
+            <div class="start-content">
+                <h1>brayden.burgers</h1>
+                <p>Chat • Games • Search • Voice • Video</p>
+                <button id="liveChatBtn" class="btn-primary">Live Chat</button>
+                <button id="privateChatBtn" class="btn-primary">Private Chat</button>
+            </div>
+        </div>
+
+        <!-- Private Chat Code Screen -->
+        <div id="privateChatCodeScreen" class="screen hidden">
+            <div class="code-screen-content">
+                <button class="back-btn" onclick="backToStart()">← Back</button>
+                <h2>Private Chat</h2>
+                <div class="code-input-container">
+                    <input type="text" id="codeInput" maxlength="6" placeholder="Enter 6-digit code">
+                    <button onclick="joinPrivateChat()" class="btn-primary">Join</button>
+                </div>
+                <div class="divider">OR</div>
+                <button onclick="createPrivateChat()" class="btn-secondary">Create New Lobby</button>
+            </div>
+        </div>
+
+        <!-- Create Private Lobby Screen -->
+        <div id="createLobbyScreen" class="screen hidden">
+            <div class="lobby-setup">
+                <button class="back-btn" onclick="backToStart()">← Back</button>
+                <h2>Create Private Lobby</h2>
+                <div class="lobby-code">
+                    <p>Your Lobby Code:</p>
+                    <h3 id="lobbyCodeDisplay"></h3>
+                    <button onclick="copyLobbyCode()" class="btn-secondary">Copy Code</button>
+                </div>
+                <button onclick="enterLobby()" class="btn-primary">Enter Lobby</button>
+            </div>
+        </div>
+
+        <!-- Main Chat Screen -->
+        <div id="chatScreen" class="screen hidden">
+            <div class="chat-container">
+                <!-- Header -->
+                <div class="chat-header">
+                    <button class="back-btn" onclick="leaveChat()">← Back</button>
+                    <div class="header-info">
+                        <h2 id="chatTitle">Live Chat</h2>
+                        <p id="chatSubtitle">Users Online</p>
+                    </div>
+                    <div class="header-buttons">
+                        <button class="icon-btn" id="voiceToggle" title="Toggle Voice Chat">🎤</button>
+                        <button class="icon-btn" id="videoToggle" title="Toggle Video">📹</button>
+                        <button class="icon-btn" id="searchBtn" title="Search">🔍</button>
+                    </div>
+                </div>
+
+                <!-- Video Container -->
+                <div id="videoContainer" class="video-container hidden">
+                    <div class="video-grid">
+                        <video id="localVideo" autoplay muted playsinline></video>
+                        <div id="remoteVideos" class="remote-videos"></div>
+                    </div>
+                    <button id="videoCloseBtn" class="close-video-btn">Close Video</button>
+                </div>
+
+                <!-- Messages -->
+                <div id="messagesContainer" class="messages-container">
+                    <div class="welcome-message">
+                        <h3>Welcome to brayden.burgers</h3>
+                        <p>Start chatting below!</p>
+                    </div>
+                </div>
+
+                <!-- Search Engine -->
+                <div id="searchPanel" class="search-panel hidden">
+                    <input type="text" id="searchInput" placeholder="Search the web...">
+                    <div id="searchResults" class="search-results"></div>
+                    <button onclick="closeSearch()" class="btn-secondary">Close Search</button>
+                </div>
+
+                <!-- Games Menu -->
+                <div id="gamesMenu" class="games-menu hidden">
+                    <button class="game-btn" onclick="playGame('tictactoe')">Tic Tac Toe</button>
+                    <button class="game-btn" onclick="playGame('guessing')">Number Guessing</button>
+                    <button class="game-btn" onclick="playGame('trivia')">Trivia</button>
+                    <button class="game-btn" onclick="closeGames()">Close Games</button>
+                </div>
+
+                <!-- Game Screens -->
+                <div id="tictactoeGame" class="game-screen hidden">
+                    <h3>Tic Tac Toe</h3>
+                    <div class="tictactoe-board" id="tictactoeBoard"></div>
+                    <button onclick="closeGame()">Back to Chat</button>
+                </div>
+
+                <div id="guessingGame" class="game-screen hidden">
+                    <h3>Number Guessing Game</h3>
+                    <p>Guess the number between 1-100!</p>
+                    <input type="number" id="guessInput" min="1" max="100" placeholder="Your guess">
+                    <button onclick="submitGuess()">Guess</button>
+                    <p id="guessResult"></p>
+                    <button onclick="closeGame()">Back to Chat</button>
+                </div>
+
+                <div id="triviaGame" class="game-screen hidden">
+                    <h3>Trivia Quiz</h3>
+                    <p id="triviaQuestion"></p>
+                    <div id="triviaOptions"></div>
+                    <button onclick="closeGame()">Back to Chat</button>
+                </div>
+
+                <!-- Input Area -->
+                <div class="input-area">
+                    <input type="text" id="messageInput" placeholder="Type a message..." autocomplete="off">
+                    <button id="sendBtn" class="btn-send">Send</button>
+                    <button id="gameBtn" class="icon-btn" title="Games">🎮</button>
+                </div>
+
+                <!-- Moderation Panel (for lobby creator) -->
+                <div id="moderationPanel" class="moderation-panel hidden">
+                    <h3>Lobby Settings</h3>
+                    <div id="usersList" class="users-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
